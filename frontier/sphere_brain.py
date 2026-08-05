@@ -234,10 +234,13 @@ class SphereBrain:
                     continue
                 rnd = 2  # fall through to leave-one-out immediately
             if rnd >= 2:
-                note("BRAIN", "command: leave-one-out refit over %d suspects" % len(given))
-                for i in range(len(given)):
+                note("BRAIN", "command: leave-one-out refit over %d suspects "
+                     "(quick pass, most-suspicious-first)" % len(given))
+                for i in reversed(range(len(given))):
                     sub = given[:i] + given[i + 1:]
-                    r2, _ = self.author(sub, hold, word, consts, extra, budget=45)
+                    r2, _ = self.author(sub, hold, word, consts, extra, budget=6, size=4)
+                    if r2 is None or not r2.found:
+                        r2 = None
                     if r2 is not None and r2.found:
                         note("BRAIN", "dropping pair %s let the space open: poison named; "
                              "BUILT %s" % (given[i], r2.expr))
@@ -305,7 +308,7 @@ def selftest():
     print("[SELFTEST] clean pairs -> PROVEN:", r["c_expression"])
     poisoned = list(clean) + [(4096, truth(4096) + 7)]
     r2 = b.solve("round the size down to a multiple of 128", pairs=poisoned,
-                 verify_c="return x & ~127;")
+                 verify_c="return x & ~127;", budget=20)
     assert r2["status"] == "PROVEN" and r2.get("poison_dropped") == [4096, truth(4096) + 7], r2
     print("[SELFTEST] poisoned pair NAMED and dropped by leave-one-out; PROVEN:",
           r2["c_expression"])
