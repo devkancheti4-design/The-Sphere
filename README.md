@@ -2,6 +2,21 @@
 
 **Proven code from your data — through a logic engine, not a guess.**
 
+## One step
+
+```bash
+./setup.sh
+```
+
+That's it: it pulls the two bodies (llama3:8b for semantics, qwen2.5-coder:7b
+for raw data), verifies the brain with an offline self-test that ends in a
+real proof over all 2^32 inputs, and you have a local setup with a
+frontier-level brain. Any ollama models can be the bodies instead:
+
+```python
+SphereBrain(body_s="mistral", body_d="deepseek-coder:6.7b")
+```
+
 The Sphere authors small integer functions (int32 → int32) from example
 input/output pairs and *proves* them: a result labeled **PROVEN** passed an
 exhaustive sweep over all 4,294,967,296 possible inputs. When the data does
